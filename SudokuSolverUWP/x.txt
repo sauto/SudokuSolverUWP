@@ -1,0 +1,21 @@
+
+        //async void CandBoardWrite()
+        //{
+        //    StorageFolder storageFolder = KnownFolders.VideosLibrary;
+        //    StorageFile sampleFile = await storageFolder.CreateFileAsync("uwp.txt", CreationCollisionOption.GenerateUniqueName);
+        //    await FileIO.AppendLinesAsync(sampleFile, Utility.outList);
+        //}  
+
+        //void a()
+        //{
+        //    xynum = 0;
+        //    for (int i = 0; i < Utility.ROW; i++)
+        //        for (int j = 0; j < Utility.COL; j++)
+        //            dataList[xynum++] = boardMatrix[i][j];
+
+        //    List<string> strData = new List<string>();
+        //    foreach (int i in dataList)
+        //        strData.Add(i == 0 ? string.Empty : i.ToString());
+
+        //    return strData;
+        //}
