@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace SudokuSolverUWP
 {
-    public class Solver// : ISolver
+    public class Solver// : ISolver ???
     {
         public Solver(bool isDisplayUsedLogic)
         {
