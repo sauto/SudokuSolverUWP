@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using Windows.Storage;
+using System.Linq;
 
 
 namespace SudokuSolverUWP
@@ -157,6 +154,17 @@ namespace SudokuSolverUWP
         }
 
         /// <summary>
+        /// 27組の９マスセットを生成
+        /// </summary>
+        /// <param name="candMat"></param>
+        /// <returns></returns>
+        public static List<int[]> GetNineCellList(int[][] candMat)
+        {
+            
+            return new List<int[]>();
+        }
+
+        /// <summary>
         /// 埋まったマスを含む行列ブロックから検索対象の数字を除外
         /// </summary>
         /// <param name="isBlankPoint">その数字が座標に入っているか</param>
@@ -195,6 +203,7 @@ namespace SudokuSolverUWP
         /// 候補数字を表示
         /// </summary>
         /// <param name="candmat"></param>
+        [Conditional("DEBUG")]
         public static void CandidateOutput(int[][] candmat)
         {
             string output = "";

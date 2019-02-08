@@ -110,7 +110,6 @@ namespace SudokuSolverUWP
 
         private void SolveCommandExecute(object parameter)
         {
-
             var sm = new SolveMain();
             DataList = sm.Solve(NumData,isUseBacktrack,isDisplayUsedLogic);
             DScore = sm.DScore;
@@ -196,8 +195,7 @@ namespace SudokuSolverUWP
         public event PropertyChangedEventHandler PropertyChanged;
 
         public virtual void OnPropertyChanged(string propertyName)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+            =>this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        
     }
 }

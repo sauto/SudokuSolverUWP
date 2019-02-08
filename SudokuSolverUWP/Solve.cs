@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace SudokuSolverUWP
 {
@@ -43,7 +41,7 @@ namespace SudokuSolverUWP
 
             //候補数字書き込み
             var candidateMat = solver.WriteCandidate(boardMatrix);
-            Utility.CandidateOutput(candidateMat);
+            //Utility.CandidateOutput(candidateMat);
 
             //初回単一法
             solver.DoSingleLogics(boardMatrix, candidateMat);

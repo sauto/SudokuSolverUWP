@@ -12,14 +12,12 @@ namespace SudokuSolverUWP
         }
 
         //難易度スコア
-        public int DifficultScore { get { return _dScore; } }
-        int _dScore = 0;
+        public int DifficultScore { get; private set; } = 0;
 
         /// <summary>
         /// 使ったロジックの表示可否
         /// </summary>
-        public bool DisplayUsedLogic { get { return _displayUsedLogic; } set { _displayUsedLogic = value; } }
-        bool _displayUsedLogic = true;
+        public bool DisplayUsedLogic { get; set; } = true;
 
         /// <summary>
         /// 使ったロジックなどのログ
@@ -49,7 +47,7 @@ namespace SudokuSolverUWP
                     {
                         for (int bit = 2; bit < (int)Math.Pow(2, 10); bit <<= 1)
                         {
-                            _dScore++;
+                            DifficultScore++;
 
                             for (int m = 0; m < Utility.COL; m++)
                             {
@@ -101,7 +99,7 @@ namespace SudokuSolverUWP
                                     //処理後盤面変化なら候補使用して脱出
                                     if (Utility.IsChangeBoard(candMat, bufMat))
                                     {
-                                        if (_displayUsedLogic)
+                                        if (DisplayUsedLogic)
                                              _log+="\n"+string.Format("対角行{0}行,{1}行", i, r);
 
                                         DoSingleLogics(mat, candMat);
@@ -155,7 +153,7 @@ namespace SudokuSolverUWP
                                 //処理後盤面変化なら候補使用して脱出
                                 if (Utility.IsChangeBoard(candMat, bufMat))
                                 {
-                                    if (_displayUsedLogic)
+                                    if (DisplayUsedLogic)
                                         _log+="\n"+string.Format("対角行確定数字版{0}行,{1}行", i, r);
 
                                     DoSingleLogics(mat, candMat);
@@ -178,7 +176,7 @@ namespace SudokuSolverUWP
                     {
                         for (int bit = 2; bit < (int)Math.Pow(2, 10); bit <<= 1)
                         {
-                            _dScore++;
+                            DifficultScore++;
                             for (int m = 0; m < Utility.ROW; m++)
                             {
                                 //同列に同じ候補があったら
@@ -226,7 +224,7 @@ namespace SudokuSolverUWP
                                     //処理後盤面変化なら候補使用して脱出
                                     if (Utility.IsChangeBoard(candMat, bufMat))
                                     {
-                                        if (_displayUsedLogic)
+                                        if (DisplayUsedLogic)
                                             _log+="\n"+string.Format("対角列{0}行,{1}行", j, c);
 
                                         DoSingleLogics(mat, candMat);
@@ -280,7 +278,7 @@ namespace SudokuSolverUWP
                                 if (Utility.IsChangeBoard(candMat, bufMat))
                                 {
                                     
-                                    if (_displayUsedLogic)
+                                    if (DisplayUsedLogic)
                                         _log+="\n"+string.Format("対角列確定数字版{0}行,{1}行\n", j, c);
 
                                     DoSingleLogics(mat, candMat);
@@ -302,7 +300,7 @@ namespace SudokuSolverUWP
         public void TripleLogic(int[][] mat, int[][] candMat)
         {
             int candMemory = 0,
-                tripleCondMatchCount = 0, tripleCondMatchRowA = 0, tripleCondMatchRowB = 0, tripleCondMatchColA = 0, tripleCondMatchColB = 0,
+                tripleCandMatchCount = 0, tripleCandMatchRowA = 0, tripleCandMatchRowB = 0, tripleCandMatchColA = 0, tripleCandMatchColB = 0,
                 candMemoryBak = 0, candMemorySame = 0, candMemoryDif = 0, candMemoryTri = 0;
             int[][] bufmat = Utility.GetInit2DimArray<int>(Utility.ROW, Utility.COL);
 
@@ -313,7 +311,7 @@ namespace SudokuSolverUWP
             //行内で候補が3つしかない
             for (int i = 0; i < Utility.ROW; i++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int j = 0; j < Utility.COL; j++)
                 {
                     //その1マスで3個しか候補数字がなかったら
@@ -328,31 +326,31 @@ namespace SudokuSolverUWP
                             //候補1つのときも通るが事前にDoSingleLogicで単一候補法を適用済みだから無視できる
                             if ((m != j) && ((candMat[i][m] & candMat[i][j]) == candMat[i][m]) && (candMat[i][m] > 0))
                             {
-                                tripleCondMatchCount++;
+                                tripleCandMatchCount++;
                                 //一致したマス記憶
-                                tripleCondMatchColA = m;
-                                if (tripleCondMatchCount == 1)
-                                    tripleCondMatchColB = m;
+                                tripleCandMatchColA = m;
+                                if (tripleCandMatchCount == 1)
+                                    tripleCandMatchColB = m;
                             }
                         }
                         //現在マスの3個の候補数字のうち2つ以上が、現在の行のうち空白である2マスで一致したら
-                        if (tripleCondMatchCount == 2)
+                        if (tripleCandMatchCount == 2)
                         {
                             //処理前盤面記憶
                             Utility.CopyToBufferMatrix(candMat, bufmat);
 
                             //さらにその行検索して
                             for (int n = 0; n < Utility.COL; n++)
-                                //3つ誤報の対象3マス以外の
-                                if ((n != j) && (n != tripleCondMatchColA) && (n != tripleCondMatchColB))
+                                //3つ子法の対象3マス以外の
+                                if ((n != j) && (n != tripleCandMatchColA) && (n != tripleCandMatchColB))
                                     //他のマスのその3つの候補数字を候補から除外
                                     candMat[i][n] &= ~candMat[i][j];
 
                             //処理後盤面変化なら候補使用して脱出
                             if (Utility.IsChangeBoard(candMat, bufmat))
                             {
-                                if (_displayUsedLogic)
-                                    _log+="\n"+string.Format("独立三つ子行333({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCondMatchColA, i, tripleCondMatchColB);
+                                if (DisplayUsedLogic)
+                                    _log+="\n"+string.Format("独立三つ子行333({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCandMatchColA, i, tripleCandMatchColB);
 
                                 DoSingleLogics(mat, candMat);
                                 return;
@@ -360,9 +358,9 @@ namespace SudokuSolverUWP
                             
                         }
                     }
-                    tripleCondMatchColA = 0;
-                    tripleCondMatchColB = 0;
-                    tripleCondMatchCount = 0;
+                    tripleCandMatchColA = 0;
+                    tripleCandMatchColB = 0;
+                    tripleCandMatchCount = 0;
                     //その1マスで2個しか候補数字がなかったら 222
                     if (Utility.GetOnBitList(candMat[i][j], 10).Count == 2)
                     {
@@ -370,7 +368,7 @@ namespace SudokuSolverUWP
                         for (int m = 0; m < Utility.COL; m++)
                         {
                             //一個も記憶していないなら
-                            if (tripleCondMatchCount == 0)
+                            if (tripleCandMatchCount == 0)
                             {
                                 //空白マスで
                                 if ((m != j) && (candMat[i][m] > 0))
@@ -386,17 +384,17 @@ namespace SudokuSolverUWP
                                             //printf("%d",m);
                                             //両者の候補数字を合わせ
                                             candMemory = candMat[i][m] | candMat[i][j];
-                                            tripleCondMatchCount++;
+                                            tripleCandMatchCount++;
                                             //条件を満たした列記憶
-                                            tripleCondMatchColA = m;
+                                            tripleCandMatchColA = m;
                                         }
                                     }
                                 }
                             }
                             //一個記憶済みなら
-                            if (tripleCondMatchCount == 1)
+                            if (tripleCandMatchCount == 1)
                             {
-                                if ((m != j) && (m != tripleCondMatchColA))
+                                if ((m != j) && (m != tripleCandMatchColA))
                                 {
                                     //既出の2マスの候補数字のうち2つが一致していたら
                                     //
@@ -409,45 +407,45 @@ namespace SudokuSolverUWP
                                     if (((candMemory & candMat[i][m]) == candMat[i][m]) && (candMat[i][m] > 0))
                                     {
                                         //条件を満たした列記憶
-                                        tripleCondMatchColB = m;
-                                        tripleCondMatchCount++;
+                                        tripleCandMatchColB = m;
+                                        tripleCandMatchCount++;
                                     }
                                 }
                             }
                         }
                         //222を満たしたら
-                        if (tripleCondMatchCount == 2)
+                        if (tripleCandMatchCount == 2)
                         {
                             //処理前盤面記憶
                             Utility.CopyToBufferMatrix(candMat, bufmat);
 
                             for (int n = 0; n < Utility.COL; n++)
                                 //さらにその行検索して
-                                if ((n != j) && (n != tripleCondMatchColA) && (n != tripleCondMatchColB))
+                                if ((n != j) && (n != tripleCandMatchColA) && (n != tripleCandMatchColB))
                                     //他のマスのその3つの候補数字を候補から除外
                                     candMat[i][n] &= ~candMemory;
 
                             //処理後盤面変化なら候補使用して脱出
                             if (Utility.IsChangeBoard(candMat, bufmat))
                             {
-                                if (_displayUsedLogic)
-                                    _log+="\n"+string.Format("独立三つ子行222({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCondMatchColA, i, tripleCondMatchColB);
+                                if (DisplayUsedLogic)
+                                    _log+="\n"+string.Format("独立三つ子行222({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCandMatchColA, i, tripleCandMatchColB);
 
                                 DoSingleLogics(mat, candMat);
                                 return;
                             }
                         }
                     }
-                    tripleCondMatchColA = 0;
-                    tripleCondMatchColB = 0;
-                    tripleCondMatchCount = 0;
+                    tripleCandMatchColA = 0;
+                    tripleCandMatchColB = 0;
+                    tripleCandMatchCount = 0;
                 }
 
             }
             //列内で候補が3つしかない
             for (int j = 0; j < Utility.COL; j++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int i = 0; i < Utility.ROW; i++)
                 {
                     //その1マスで3個しか候補数字がなかったら
@@ -458,23 +456,23 @@ namespace SudokuSolverUWP
                          //3個の候補数字のうち2つ以上が空白である2マスで一致したら　332　322
                             if ((m != i) && ((candMat[m][j] & candMat[i][j]) == candMat[m][j]) && (candMat[m][j] > 0))
                             {
-                                tripleCondMatchCount++;
+                                tripleCandMatchCount++;
                                 //一致したマス記憶
-                                tripleCondMatchRowA = m;
-                                if (tripleCondMatchCount == 1)
+                                tripleCandMatchRowA = m;
+                                if (tripleCandMatchCount == 1)
                                 {
-                                    tripleCondMatchRowB = m;
+                                    tripleCandMatchRowB = m;
                                 }
                             }
                         }
-                        if (tripleCondMatchCount == 2)
+                        if (tripleCandMatchCount == 2)
                         {//3個の候補数字が3マスで一致したら
                          //処理前盤面記憶
                             Utility.CopyToBufferMatrix(candMat, bufmat);
 
                             for (int n = 0; n < Utility.ROW; n++)
                             {//さらにその列検索して
-                                if ((n != i) && (n != tripleCondMatchRowA) && (n != tripleCondMatchRowB))
+                                if ((n != i) && (n != tripleCandMatchRowA) && (n != tripleCandMatchRowB))
                                 {
                                     //他のマスのその3つの候補数字を候補から除外
                                     candMat[n][j] = (candMat[n][j] | candMat[i][j]) - candMat[i][j];
@@ -484,24 +482,24 @@ namespace SudokuSolverUWP
                             //処理後盤面変化なら候補使用して脱出
                             if (Utility.IsChangeBoard(candMat, bufmat))
                             {
-                                if (_displayUsedLogic)
-                                    _log+="\n"+string.Format("独立三つ子列333({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCondMatchRowA, i, tripleCondMatchRowB);
+                                if (DisplayUsedLogic)
+                                    _log+="\n"+string.Format("独立三つ子列333({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCandMatchRowA, i, tripleCandMatchRowB);
 
                                 DoSingleLogics(mat, candMat);
                                 return;
                             }
                         }
                     }
-                    tripleCondMatchRowA = 0;
-                    tripleCondMatchRowB = 0;
-                    tripleCondMatchCount = 0;
+                    tripleCandMatchRowA = 0;
+                    tripleCandMatchRowB = 0;
+                    tripleCandMatchCount = 0;
 
                     if (Utility.GetOnBitList(candMat[i][j], 10).Count == 2)
                     {//その1マスで2個しか候補数字がなかったら 222
                         for (int m = 0; m < Utility.ROW; m++)
                         {//その列検索して
                          //一個も記憶していないなら
-                            if (tripleCondMatchCount == 0)
+                            if (tripleCandMatchCount == 0)
                             {
                                 if ((m != i) && (candMat[m][j] > 0))
                                 {
@@ -515,35 +513,35 @@ namespace SudokuSolverUWP
                                         {
                                             //両者の候補数字を合わせ
                                             candMemory = candMat[m][j] | candMat[i][j];
-                                            tripleCondMatchCount++;
+                                            tripleCandMatchCount++;
                                             //条件を満たした行記憶
-                                            tripleCondMatchRowA = m;
+                                            tripleCandMatchRowA = m;
                                         }
                                     }
                                 }
                             }
                             //一個記憶済みなら
-                            if (tripleCondMatchCount == 1)
+                            if (tripleCandMatchCount == 1)
                             {
-                                if ((m != i) && (m != tripleCondMatchRowA))
+                                if ((m != i) && (m != tripleCandMatchRowA))
                                 {
                                     //既出の2マスの数字のうち2つが一致していたら
                                     if (((candMemory & candMat[m][j]) == candMat[m][j]) && (candMat[m][j] > 0))
                                     {
-                                        tripleCondMatchRowB = m;
-                                        tripleCondMatchCount++;
+                                        tripleCandMatchRowB = m;
+                                        tripleCandMatchCount++;
                                     }
                                 }
                             }
                         }
-                        if (tripleCondMatchCount == 2)
+                        if (tripleCandMatchCount == 2)
                         {//222を満たしたら
                          //処理前盤面記憶
                             Utility.CopyToBufferMatrix(candMat, bufmat);
 
                             for (int n = 0; n < Utility.ROW; n++)
                             {//さらにその列検索して
-                                if ((n != i) && (n != tripleCondMatchRowA) && (n != tripleCondMatchRowB))
+                                if ((n != i) && (n != tripleCandMatchRowA) && (n != tripleCandMatchRowB))
                                 {
                                     //他のマスのその3つの候補数字を候補から除外
                                     candMat[n][j] &= ~candMemory;
@@ -553,8 +551,8 @@ namespace SudokuSolverUWP
                             //処理後盤面変化なら候補使用して脱出
                             if (Utility.IsChangeBoard(candMat, bufmat))
                             {
-                                if (_displayUsedLogic)
-                                    _log+="\n"+string.Format("独立三つ子列222({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCondMatchRowA, i, tripleCondMatchRowB);
+                                if (DisplayUsedLogic)
+                                    _log+="\n"+string.Format("独立三つ子列222({0},{1}),({2},{3}),({4},{5})", i, j, i, tripleCandMatchRowA, i, tripleCandMatchRowB);
 
                                 DoSingleLogics(mat, candMat);
                                 return;
@@ -562,9 +560,9 @@ namespace SudokuSolverUWP
                         }
                         candMemory = 0;
                     }
-                    tripleCondMatchRowA = 0;
-                    tripleCondMatchRowB = 0;
-                    tripleCondMatchCount = 0;
+                    tripleCandMatchRowA = 0;
+                    tripleCandMatchRowB = 0;
+                    tripleCandMatchCount = 0;
                 }
 
             }
@@ -573,7 +571,7 @@ namespace SudokuSolverUWP
             {
                 for (int j = 0; j < Utility.COL; j = j + 3)
                 {
-                    _dScore++;
+                    DifficultScore++;
                     for (int p = i; p <= i + 2; p++)
                     {
                         for (int q = j; q <= j + 2; q++)
@@ -589,19 +587,19 @@ namespace SudokuSolverUWP
                                         //3個の候補数字のうち2つ以上が空白である2マスで一致したら　332　322
                                         if (!((s == p) && (t == q)) && ((candMat[s][t] & candMat[p][q]) == candMat[s][t]) && (candMat[s][t] > 0))
                                         {
-                                            tripleCondMatchCount++;
+                                            tripleCandMatchCount++;
                                             //一致したマス記憶
-                                            tripleCondMatchRowA = s;//0もありや
-                                            tripleCondMatchColA = t;
-                                            if (tripleCondMatchCount == 1)
+                                            tripleCandMatchRowA = s;//0もありや
+                                            tripleCandMatchColA = t;
+                                            if (tripleCandMatchCount == 1)
                                             {
-                                                tripleCondMatchRowB = s;
-                                                tripleCondMatchColB = t;
+                                                tripleCandMatchRowB = s;
+                                                tripleCandMatchColB = t;
                                             }
                                         }
                                     }
                                 }
-                                if (tripleCondMatchCount == 2)
+                                if (tripleCandMatchCount == 2)
                                 {//3個の候補数字が3マスで一致したら
                                  //処理前盤面記憶
                                     Utility.CopyToBufferMatrix(candMat, bufmat);
@@ -610,7 +608,7 @@ namespace SudokuSolverUWP
                                     {
                                         for (int t = j; t <= j + 2; t++)
                                         {//さらにそのブロック検索して
-                                            if (!((s == p) && (t == q)) && !((s == tripleCondMatchRowA) && (t == tripleCondMatchColA)) && !((s == tripleCondMatchRowB) && (t == tripleCondMatchColB)))
+                                            if (!((s == p) && (t == q)) && !((s == tripleCandMatchRowA) && (t == tripleCandMatchColA)) && !((s == tripleCandMatchRowB) && (t == tripleCandMatchColB)))
                                             {
                                                 //printf("(%d,%d),(%d,%d)",i,j,s,t);
                                                 //他のマスのその3つの候補数字を候補から除外
@@ -622,19 +620,19 @@ namespace SudokuSolverUWP
                                     //処理後盤面変化なら候補使用して脱出
                                     if (Utility.IsChangeBoard(candMat, bufmat))
                                     {
-                                        if (_displayUsedLogic)
+                                        if (DisplayUsedLogic)
                                             _log+="\n"+string.Format("独立三つ子ブロック333({0},{1}),({2},{3}),({4},{5})",
-                                                p, q, tripleCondMatchRowA, tripleCondMatchColA, tripleCondMatchRowB, tripleCondMatchColB);
+                                                p, q, tripleCandMatchRowA, tripleCandMatchColA, tripleCandMatchRowB, tripleCandMatchColB);
 
                                         DoSingleLogics(mat, candMat);
                                         return;
                                     }
                                 }
                             }
-                            tripleCondMatchRowA = 0;
-                            tripleCondMatchColA = 0;
-                            tripleCondMatchRowB = 0;
-                            tripleCondMatchColB = 0;
+                            tripleCandMatchRowA = 0;
+                            tripleCandMatchColA = 0;
+                            tripleCandMatchRowB = 0;
+                            tripleCandMatchColB = 0;
 
                             //その1マスで2個しか候補数字がなかったら 222
                             if (Utility.GetOnBitList(candMat[p][q], 10).Count == 2)
@@ -645,7 +643,7 @@ namespace SudokuSolverUWP
                                     for (int t = j; t <= j + 2; t++)
                                     {
                                         //一個も記憶していないなら
-                                        if (tripleCondMatchCount == 0)
+                                        if (tripleCandMatchCount == 0)
                                         {
                                             if (!((s == p) && (t == q)) && (candMat[s][t] > 0))
                                             {
@@ -659,32 +657,32 @@ namespace SudokuSolverUWP
                                                     {
                                                         //両者の候補数字を合わせ
                                                         candMemory = candMat[s][t] | candMat[p][q];
-                                                        tripleCondMatchCount++;
+                                                        tripleCandMatchCount++;
                                                         //条件を満たしたマス記憶
-                                                        tripleCondMatchRowA = s;
-                                                        tripleCondMatchColA = t;
+                                                        tripleCandMatchRowA = s;
+                                                        tripleCandMatchColA = t;
                                                     }
                                                 }
                                             }
                                         }
                                         //一個記憶済みなら
-                                        if (tripleCondMatchCount == 1)
+                                        if (tripleCandMatchCount == 1)
                                         {
-                                            if (!((s == p) && (t == q)) && !((s == tripleCondMatchRowA) && (t == tripleCondMatchColA)))
+                                            if (!((s == p) && (t == q)) && !((s == tripleCandMatchRowA) && (t == tripleCandMatchColA)))
                                             {
                                                 //既出の2マスの数字のうち2つが一致していたら
                                                 if (((candMemory & candMat[s][t]) == candMat[s][t]) && (candMat[s][t] > 0))
                                                 {
-                                                    tripleCondMatchRowB = s;
-                                                    tripleCondMatchColB = t;
-                                                    tripleCondMatchCount++;
+                                                    tripleCandMatchRowB = s;
+                                                    tripleCandMatchColB = t;
+                                                    tripleCandMatchCount++;
                                                 }
                                             }
                                         }
                                     }
                                 }
                                 //222を満たしたら
-                                if (tripleCondMatchCount == 2)
+                                if (tripleCandMatchCount == 2)
                                 {
                                     //処理前盤面記憶
                                     Utility.CopyToBufferMatrix(candMat, bufmat);
@@ -693,7 +691,7 @@ namespace SudokuSolverUWP
                                     {
                                         for (int t = j; t <= j + 2; t++)
                                         {//さらにそのブロック検索して
-                                            if (!((s == p) && (t == q)) && !((s == tripleCondMatchRowA) && (t == tripleCondMatchColA)) && !((s == tripleCondMatchRowB) && (t == tripleCondMatchColB)))
+                                            if (!((s == p) && (t == q)) && !((s == tripleCandMatchRowA) && (t == tripleCandMatchColA)) && !((s == tripleCandMatchRowB) && (t == tripleCandMatchColB)))
                                             {
                                                 //他のマスのその3つの候補数字を候補から除外
                                                 candMat[s][t] &= ~candMemory;
@@ -704,9 +702,9 @@ namespace SudokuSolverUWP
                                     //処理後盤面変化なら候補使用して脱出
                                     if (Utility.IsChangeBoard(candMat, bufmat))
                                     {
-                                        if (_displayUsedLogic)
+                                        if (DisplayUsedLogic)
                                             _log+="\n"+string.Format("独立三つ子ブロック333({0},{1}),({2},{3}),({4},{5})",
-                                                p, q, tripleCondMatchRowA, tripleCondMatchColA, tripleCondMatchRowB, tripleCondMatchColB);
+                                                p, q, tripleCandMatchRowA, tripleCandMatchColA, tripleCandMatchRowB, tripleCandMatchColB);
 
                                         DoSingleLogics(mat, candMat);
                                         return;
@@ -714,11 +712,11 @@ namespace SudokuSolverUWP
                                 }
                                 candMemory = 0;
                             }
-                            tripleCondMatchRowA = 0;
-                            tripleCondMatchColA = 0;
-                            tripleCondMatchRowB = 0;
-                            tripleCondMatchColB = 0;
-                            tripleCondMatchCount = 0;
+                            tripleCandMatchRowA = 0;
+                            tripleCandMatchColA = 0;
+                            tripleCandMatchRowB = 0;
+                            tripleCandMatchColB = 0;
+                            tripleCandMatchCount = 0;
                         }
                     }
 
@@ -734,7 +732,7 @@ namespace SudokuSolverUWP
             //行内で候補が3つしかない判定
             for (int i = 0; i < Utility.ROW; i++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int j = 0; j < Utility.COL; j++)
                 {
                     //マス(i,j)が埋まってなかったら
@@ -791,7 +789,7 @@ namespace SudokuSolverUWP
                                                     //処理後盤面変化なら候補使用して脱出
                                                     if (Utility.IsChangeBoard(candMat, bufmat))
                                                     {
-                                                        if (_displayUsedLogic)
+                                                        if (DisplayUsedLogic)
                                                             _log+="\n"+string.Format("居候三つ子行333({0},{1}),({2},{3}),({4},{5})", i, j, i, k, i, m);
 
                                                         DoSingleLogics(mat, candMat);
@@ -872,7 +870,7 @@ namespace SudokuSolverUWP
                                                         //処理後盤面変化なら候補使用して脱出
                                                         if (Utility.IsChangeBoard(candMat, bufmat))
                                                         {
-                                                            if (_displayUsedLogic)
+                                                            if (DisplayUsedLogic)
                                                                 _log+="\n"+string.Format("居候三つ子行222({0},{1}),({2},{3}),({4},{5})", i, j, i, k, i, m);
 
                                                             DoSingleLogics(mat, candMat);
@@ -902,7 +900,7 @@ namespace SudokuSolverUWP
             //列内で候補が3つしかない判定
             for (int j = 0; j < Utility.COL; j++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int i = 0; i < Utility.ROW; i++)
                 {
                     if (candMat[i][j] > 0)
@@ -956,7 +954,7 @@ namespace SudokuSolverUWP
                                                     //処理後盤面変化なら候補使用して脱出
                                                     if (Utility.IsChangeBoard(candMat, bufmat))
                                                     {
-                                                        if (_displayUsedLogic)
+                                                        if (DisplayUsedLogic)
                                                             _log+="\n"+string.Format("居候三つ子列333({0},{1}),({2},{3}),({4},{5})", i, j, k, j, m, j);
 
                                                         DoSingleLogics(mat, candMat);
@@ -1036,7 +1034,7 @@ namespace SudokuSolverUWP
                                                         //処理後盤面変化なら候補使用して脱出
                                                         if (Utility.IsChangeBoard(candMat, bufmat))
                                                         {
-                                                            if (_displayUsedLogic)
+                                                            if (DisplayUsedLogic)
                                                                 _log+="\n"+string.Format("居候三つ子列222({0},{1}),({2},{3}),({4},{5})", i, j, k, j, m, j);
 
                                                             DoSingleLogics(mat, candMat);
@@ -1068,7 +1066,7 @@ namespace SudokuSolverUWP
             {
                 for (int j = 0; j < Utility.COL; j = j + 3)
                 {
-                    _dScore++;
+                    DifficultScore++;
                     for (int p = i; p <= i + 2; p++)
                     {
                         for (int q = j; q <= j + 2; q++)
@@ -1126,7 +1124,7 @@ namespace SudokuSolverUWP
                                                                     //処理後盤面変化なら候補使用して脱出
                                                                     if (Utility.IsChangeBoard(candMat, bufmat))
                                                                     {
-                                                                        if (_displayUsedLogic)
+                                                                        if (DisplayUsedLogic)
                                                                             _log+="\n"+string.Format("居候三つ子ブロック333({0},{1}),({2},{3}),({4},{5})", p, q, s, t, u, w);
                                                                         DoSingleLogics(mat, candMat);
                                                                         return;
@@ -1207,7 +1205,7 @@ namespace SudokuSolverUWP
                                                                         //処理後盤面変化なら候補使用して脱出
                                                                         if (Utility.IsChangeBoard(candMat, bufmat))
                                                                         {
-                                                                            if (_displayUsedLogic)
+                                                                            if (DisplayUsedLogic)
                                                                                 _log+="\n"+string.Format("居候三つ子ブロック222({0},{1}),({2},{3}),({4},{5})", p, q, s, t, u, w);
                                                                             DoSingleLogics(mat, candMat);
                                                                             return;
@@ -1306,7 +1304,7 @@ namespace SudokuSolverUWP
                                             //処理後盤面変化なら候補使用して脱出
                                             if (Utility.IsChangeBoard(candMat, bufMat))
                                             {
-                                                if (_displayUsedLogic)
+                                                if (DisplayUsedLogic)
                                                     _log+="\n"+string.Format("共有行→ブロック({0},{1})", i, m);
 
                                                 //Utility.Mistake(mat, string.Format("共有行→ブロック({0},{1})", i, m));
@@ -1323,7 +1321,7 @@ namespace SudokuSolverUWP
                         }
                         blankCheck = 0;
                     }
-                    _dScore++;
+                    DifficultScore++;
 
                 }
             }
@@ -1374,7 +1372,7 @@ namespace SudokuSolverUWP
                                             //処理後盤面変化なら候補使用して脱出
                                             if (Utility.IsChangeBoard(candMat, bufMat))
                                             {
-                                                if (_displayUsedLogic)
+                                                if (DisplayUsedLogic)
                                                     _log+="\n"+string.Format("共有列→ブロック({0},{1})", m, j);
 
                                                 //Utility.Mistake(mat, string.Format("共有列→ブロック({0},{1})", m, j));
@@ -1391,7 +1389,7 @@ namespace SudokuSolverUWP
                         }
                         blankCheck = 0;
                     }
-                    _dScore++;
+                    DifficultScore++;
 
                 }
             }
@@ -1450,7 +1448,7 @@ namespace SudokuSolverUWP
                                         //処理後盤面変化なら候補使用して脱出
                                         if (Utility.IsChangeBoard(candMat, bufMat))
                                         {
-                                            if (_displayUsedLogic)
+                                            if (DisplayUsedLogic)
                                                 _log+="\n"+string.Format("共有ブロック→行({0},{1})", i, j);
 
                                             //Utility.Mistake(mat, string.Format("共有ブロック→行({0},{1})", i, j));
@@ -1515,7 +1513,7 @@ namespace SudokuSolverUWP
                                         //処理後盤面変化なら候補使用して脱出
                                         if (Utility.IsChangeBoard(candMat, bufMat))
                                         {
-                                            if (_displayUsedLogic)
+                                            if (DisplayUsedLogic)
                                                 _log+="\n"+string.Format("共有ブロック→列({0},{1})", i, j);
 
                                             //Utility.Mistake(mat, string.Format("共有ブロック→列({0},{1})", i, j));
@@ -1531,7 +1529,7 @@ namespace SudokuSolverUWP
                             blankCheck = 0;
 
                         }
-                        _dScore++;
+                        DifficultScore++;
 
                     }
                 }
@@ -1553,7 +1551,7 @@ namespace SudokuSolverUWP
             //行内で候補が２つしかない
             for (int i = 0; i < Utility.ROW; i++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int j = 0; j < Utility.COL; j++)
                 {
                     //まとめられねーかなーと思ったが、2次元配列のどちらかの次元数を指定してforループなんてできないので無理
@@ -1578,7 +1576,7 @@ namespace SudokuSolverUWP
                                 //処理後盤面変化なら候補使用して脱出
                                 if (Utility.IsChangeBoard(candMat, bufmat))
                                 {
-                                    if (_displayUsedLogic)
+                                    if (DisplayUsedLogic)
                                         _log+="\n"+string.Format("独立双子行({0},{1}),({2},{3})", i, j, i, m);
 
                                     //Utility.Mistake(mat, string.Format("独立双子行({0},{1}),({2},{3})", i, j, i, m));
@@ -1594,7 +1592,7 @@ namespace SudokuSolverUWP
             //列内で候補が２つしかない
             for (int j = 0; j < Utility.COL; j++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int i = 0; i < Utility.ROW; i++)
                 {
                     //その1マスで2個しか候補数字がなかったら
@@ -1617,7 +1615,7 @@ namespace SudokuSolverUWP
                                 //処理後盤面変化なら候補使用して脱出
                                 if (Utility.IsChangeBoard(candMat, bufmat))
                                 {
-                                    if (_displayUsedLogic)
+                                    if (DisplayUsedLogic)
                                         _log+="\n"+string.Format("独立双子列({0},{1}),({2},{3})", i, j, m, j);
 
                                     //Utility.Mistake(mat, string.Format("独立双子列({0},{1}),({2},{3})", i, j, m, j));
@@ -1639,7 +1637,7 @@ namespace SudokuSolverUWP
             {
                 for (int j = 0; j < Utility.COL; j = j + 3)
                 {
-                    _dScore++;
+                    DifficultScore++;
                     for (int p = i; p <= i + 2; p++)
                         for (int q = j; q <= j + 2; q++)
                             //その1マスで2個しか候補数字がなかったら
@@ -1662,7 +1660,7 @@ namespace SudokuSolverUWP
                                             //処理後盤面変化なら候補使用して脱出
                                             if (Utility.IsChangeBoard(candMat, bufmat))
                                             {
-                                                if (_displayUsedLogic)
+                                                if (DisplayUsedLogic)
                                                     _log+="\n"+string.Format("独立双子ブロック({0},{1}),({2},{3})", p, q, s, t);
 
                                                 //Utility.Mistake(mat, string.Format("独立双子ブロック({0},{1}),({2},{3})", p, q, s, t));
@@ -1680,7 +1678,7 @@ namespace SudokuSolverUWP
             //行内で候補が2つしかない判定
             for (int i = 0; i < Utility.ROW; i++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int j = 0; j < Utility.COL; j++)
                 {
                     //埋まってなかったら
@@ -1721,7 +1719,7 @@ namespace SudokuSolverUWP
                                             //処理後盤面変化なら候補使用して脱出
                                             if (Utility.IsChangeBoard(candMat, bufmat))
                                             {
-                                                if (_displayUsedLogic)
+                                                if (DisplayUsedLogic)
                                                     _log+="\n"+string.Format("居候双子行({0},{1}),({2},{3})", i, j, i, k);
 
                                                 //Utility.Mistake(mat, string.Format("居候双子行({0},{1}),({2},{3})", i, j, i, k));
@@ -1741,7 +1739,7 @@ namespace SudokuSolverUWP
             //列内で候補が2つしかない判定
             for (int j = 0; j < Utility.COL; j++)
             {
-                _dScore++;
+                DifficultScore++;
                 for (int i = 0; i < Utility.ROW; i++)
                 {
                     if (candMat[i][j] > 0)
@@ -1782,7 +1780,7 @@ namespace SudokuSolverUWP
                                             //処理後盤面変化なら候補使用して脱出
                                             if (Utility.IsChangeBoard(candMat, bufmat))
                                             {
-                                                if (_displayUsedLogic)
+                                                if (DisplayUsedLogic)
                                                     _log+="\n"+string.Format("居候双子列({0},{1}),({2},{3})", i, j, k,j);
 
                                                 //Utility.Mistake(mat, string.Format("居候双子列({0},{1}),({2},{3})", i, j, k, j));
@@ -1804,7 +1802,7 @@ namespace SudokuSolverUWP
             {
                 for (int j = 0; j < Utility.COL; j = j + 3)
                 {
-                    _dScore++;
+                    DifficultScore++;
                     //ブロック内を検索　計３回やるからややこしいことこの上ない 最大8ネスト
                     for (int p = i; p <= i + 2; p++)
                     {
@@ -1854,7 +1852,7 @@ namespace SudokuSolverUWP
                                                         //処理後盤面変化なら候補使用して脱出
                                                         if (Utility.IsChangeBoard(candMat, bufmat))
                                                         {
-                                                            if (_displayUsedLogic)
+                                                            if (DisplayUsedLogic)
                                                                 _log+="\n"+string.Format("居候双子ブロック({0},{1}),({2},{3})", p, q, s, t);
 
                                                             //Utility.Mistake(mat, string.Format("居候双子ブロック({0},{1}),({2},{3})", p, q, s, t));
@@ -2008,7 +2006,7 @@ namespace SudokuSolverUWP
                     if (matrix[i][j] == 0)
                     {
                         candidateMat[i][j] = 1022;//1111111110
-                        _dScore++;
+                        DifficultScore++;
                     }
             //候補数字書き込み(というか絞り込み)　書き込み時にスコア++だけど
             //これ入らないのを消去してるだけだから厳密に言えば書き込んでない
@@ -2144,7 +2142,7 @@ namespace SudokuSolverUWP
                         isBlankPoint[i][j] = true;
 
                 //スコアカウント
-                _dScore++;
+                DifficultScore++;
 
                 #region CRBE
                 //決定した探索数字でCRBE法を適用。9個埋まるまでor盤面が変化しなくなる＝埋まらなくなるまでループ
@@ -2483,7 +2481,7 @@ namespace SudokuSolverUWP
         public void BruteForce(int[] board, int pos, int[][] retBoard)
         {
             //探索が終わらないなら強制終了　完成時も終了
-            if (_dScore > 10000000 || Utility.IsCompleteBoard(retBoard))
+            if (DifficultScore > 10000000 || Utility.IsCompleteBoard(retBoard))
                 return;
 
             int emptyPos = 0;
@@ -2509,7 +2507,7 @@ namespace SudokuSolverUWP
             //1から9のなかで現在のマスに入れられる数字があったなら埋めて次のマスへ
             for (int n = 1; n <= 9; n++)
             {
-                _dScore++;
+                DifficultScore++;
                 if (CanInput(board, emptyPos, n))
                 {
                     board[emptyPos] = n;

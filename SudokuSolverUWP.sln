@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OCRTest", "OCRTest\OCRTest.csproj", "{FC1A882D-9235-410C-A6FA-1FFB900973A0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuSolver", "SudokuSolver\SudokuSolver.csproj", "{F996A214-88F3-4DA1-9625-45364FAD5D3D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "smp1", "..\..\..\..\Desktop\プログラミング\ソフト\卒研プログラムと資料\smp1\smp1.vcxproj", "{2C88E435-5A4A-4C0D-A19F-739C248EDF25}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SudokuSolverUWP", "SudokuSolverUWP\SudokuSolverUWP.csproj", "{40CBCB42-4C06-45FD-AC26-1A5411978CED}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "smp1", "E:\プログラミング\ソフト\卒研プログラムと資料\smp1\smp1.vcxproj", "{2C88E435-5A4A-4C0D-A19F-739C248EDF25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,15 +50,6 @@ Global
 		{F996A214-88F3-4DA1-9625-45364FAD5D3D}.Release|x64.ActiveCfg = Release|Any CPU
 		{F996A214-88F3-4DA1-9625-45364FAD5D3D}.Release|x64.Build.0 = Release|Any CPU
 		{F996A214-88F3-4DA1-9625-45364FAD5D3D}.Release|x86.ActiveCfg = Release|Any CPU
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|ARM.ActiveCfg = Debug|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|x64.ActiveCfg = Debug|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|x86.ActiveCfg = Debug|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|x86.Build.0 = Debug|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|Any CPU.ActiveCfg = Release|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|ARM.ActiveCfg = Release|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|x64.ActiveCfg = Release|Win32
-		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|x86.ActiveCfg = Release|Win32
 		{40CBCB42-4C06-45FD-AC26-1A5411978CED}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{40CBCB42-4C06-45FD-AC26-1A5411978CED}.Debug|Any CPU.Build.0 = Debug|x86
 		{40CBCB42-4C06-45FD-AC26-1A5411978CED}.Debug|Any CPU.Deploy.0 = Debug|x86
@@ -83,8 +74,21 @@ Global
 		{40CBCB42-4C06-45FD-AC26-1A5411978CED}.Release|x86.ActiveCfg = Release|x86
 		{40CBCB42-4C06-45FD-AC26-1A5411978CED}.Release|x86.Build.0 = Release|x86
 		{40CBCB42-4C06-45FD-AC26-1A5411978CED}.Release|x86.Deploy.0 = Release|x86
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|ARM.ActiveCfg = Debug|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|x64.ActiveCfg = Debug|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|x86.ActiveCfg = Debug|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Debug|x86.Build.0 = Debug|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|Any CPU.ActiveCfg = Release|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|ARM.ActiveCfg = Release|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|x64.ActiveCfg = Release|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|x86.ActiveCfg = Release|Win32
+		{2C88E435-5A4A-4C0D-A19F-739C248EDF25}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7007A750-F8E7-4693-83A9-9EE435A0137D}
 	EndGlobalSection
 EndGlobal
